@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pemrograman_mobile/screens/advanced_expense_list_screen.dart';
+import 'package:pemrograman_mobile/screens/expense_list_screen.dart';
+import 'package:pemrograman_mobile/screens/login_screen.dart';
+import 'package:pemrograman_mobile/screens/profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -13,6 +17,11 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             onPressed: () {
               // Handle logout
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+                (route) => false,
+              );
             },
             icon: Icon(Icons.logout),
           ),
@@ -23,9 +32,7 @@ class HomeScreen extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
+              decoration: BoxDecoration(color: Colors.blue),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -57,7 +64,12 @@ class HomeScreen extends StatelessWidget {
               leading: Icon(Icons.person),
               title: Text('Profile'),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileScreen(),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -73,6 +85,11 @@ class HomeScreen extends StatelessWidget {
               title: Text('Logout'),
               onTap: () {
                 // Handle logout
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  (route) => false,
+                );
               },
             ),
           ],
@@ -98,10 +115,60 @@ class HomeScreen extends StatelessWidget {
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
                 children: [
-                  _buildDashboardCard('Profile', Icons.person, Colors.green),
-                  _buildDashboardCard('Messages', Icons.message, Colors.orange),
-                  _buildDashboardCard('Settings', Icons.settings, Colors.purple),
-                  _buildDashboardCard('Help', Icons.help, Colors.red),
+                  _buildDashboardCard(
+                    'Pengeluaran',
+                    Icons.attach_money,
+                    Colors.green,
+                    () {
+                      // Navigasi ke ExpenseListScreen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ExpenseListScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  _buildDashboardCard(
+                    'Profile',
+                    Icons.person,
+                    Colors.green,
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfileScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  _buildDashboardCard(
+                    'Messages',
+                    Icons.message,
+                    Colors.orange,
+                    null,
+                  ),
+                  _buildDashboardCard(
+                    'Settings',
+                    Icons.settings,
+                    Colors.purple,
+                    null,
+                  ),
+                  _buildDashboardCard('Help', Icons.help, Colors.red, null),
+                  _buildDashboardCard(
+                    'Advance Pengeluaran',
+                    Icons.bar_chart,
+                    Colors.blue,
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => const AdvancedExpenseListScreen(),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -111,30 +178,42 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDashboardCard(String title, IconData icon, Color color) {
+  Widget _buildDashboardCard(
+    String title,
+    IconData icon,
+    Color color,
+    VoidCallback? onTap,
+  ) {
     return Card(
       elevation: 4,
-      child: InkWell(
-        onTap: () {
-          // Handle card tap
-        },
-        child: Container(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 48, color: color),
-              SizedBox(height: 12),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+      child: Builder(
+        builder:
+            (context) => InkWell(
+              onTap:
+                  onTap ??
+                  () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Fitur $title segera hadir!')),
+                    );
+                  },
+              child: Container(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(icon, size: 48, color: color),
+                    SizedBox(height: 12),
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
+            ),
       ),
     );
   }
